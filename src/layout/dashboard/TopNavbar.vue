@@ -13,13 +13,13 @@
       </button>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="ti-panel"></i>
               <p>Stats</p>
             </a>
-          </li>
-          <drop-down class="nav-item"
+          </li> -->
+          <!-- <drop-down class="nav-item"
                      title="5 Notifications"
                      title-classes="nav-link"
                      icon="ti-bell">
@@ -28,20 +28,28 @@
             <a class="dropdown-item" href="#">Notification 3</a>
             <a class="dropdown-item" href="#">Notification 4</a>
             <a class="dropdown-item" href="#">Another notification</a>
+          </drop-down> -->
+          <drop-down class="nav-item"
+                     :title="email"
+                     title-classes="nav-link"
+                     icon="ti-user">
+            <a class="dropdown-item" href="#" @click="profile">Profile</a>
+            <a class="dropdown-item" href="#" @click="logout">Log Out</a>
           </drop-down>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="ti-settings"></i>
               <p>
                 Settings
               </p>
             </a>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div></nav>
 </template>
 <script>
+import firebase from "firebase";
 export default {
   computed: {
     routeName() {
@@ -51,8 +59,12 @@ export default {
   },
   data() {
     return {
-      activeNotifications: false
+      activeNotifications: false,
+      email: ''
     };
+  },
+  created() {
+    this.getUser();
   },
   methods: {
     capitalizeFirstLetter(string) {
@@ -69,6 +81,23 @@ export default {
     },
     hideSidebar() {
       this.$sidebar.displaySidebar(false);
+    },
+    logout: function() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.replace("login");
+        });
+    },
+    getUser() {
+      this.user = firebase.auth().currentUser; 
+      if(this.user) { 
+        this.email = this.user.email;
+      }
+    },
+    profile() {
+      this.$router.replace("profile");
     }
   }
 };

@@ -10,10 +10,9 @@
     <div class="sidebar-wrapper" id="style-3">
       <div class="logo">
         <a href="#" class="simple-text">
-            <div class="logo-img">
-                <img src="@/assets/img/vue-logo.png" alt="">
+            <div class="img-logo-w">
+                <img src="@/assets/img/youthosana-logo-w.png" alt="">
             </div>
-          {{title}}
         </a>
       </div>
       <slot>
@@ -133,4 +132,10 @@ export default {
 };
 </script>
 <style>
+.img-logo-w {
+  width: 100%;
+}
+.img-logo-w img {
+  width: 100%;
+}
 </style>

@@ -4,7 +4,7 @@
     <h3>Sign In</h3>
     <input type="text" v-model="email" placeholder="Email" /><br />
     <input type="password" v-model="password" placeholder="Password" /><br />
-    <el-button type="primary" @click="login" round>Login</el-button>
+    <el-button type="primary" round @click="login">Login</el-button>
     <p>
       Or sign in with others <br />
       <button class="social-button" @click="googleLogin">
@@ -33,41 +33,41 @@ export default {
   },
   methods: {
     login: function() {
-      // firebase
-      //   .auth()
-      //   .signInWithEmailAndPassword(this.email, this.password)
-      //   .then(
-      //     user => {
-      //       this.$router.replace("home");
-      //     },
-      //     err => {
-      //       alert("Ops." + err.message);
-      //     }
-      //   );
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(
+          user => {
+            this.$router.replace("profile");
+          },
+          err => {
+            alert("Ops." + err.message);
+          }
+        );
     },
     googleLogin: function() {
-      // const provider = new firebase.auth.GoogleAuthProvider();
-      // firebase
-      //   .auth()
-      //   .signInWithPopup(provider)
-      //   .then(result => {
-      //     this.$router.replace("home");
-      //   })
-      //   .catch(err => {
-      //     alert("Ops!" + err.message);
-      //   });
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase
+        .auth()
+        .signInWithPopup(provider)
+        .then(result => {
+          this.$router.replace("profile");
+        })
+        .catch(err => {
+          alert("Ops!" + err.message);
+        });
     },
     facebookLogin: function() {
-      // const provider = new firebase.auth.FacebookAuthProvider();
-      // firebase
-      //   .auth()
-      //   .signInWithPopup(provider)
-      //   .then(result => {
-      //     this.$router.replace("home");
-      //   })
-      //   .catch(err => {
-      //     alert("Ops!" + err.message);
-      //   });
+      const provider = new firebase.auth.FacebookAuthProvider();
+      firebase
+        .auth()
+        .signInWithPopup(provider)
+        .then(result => {
+          this.$router.replace("profile");
+        })
+        .catch(err => {
+          alert("Ops!" + err.message);
+        });
     }
   }
 };

@@ -5,7 +5,7 @@
     <p>Let's create a new account!</p>
     <input type="text" v-model="email" placeholder="Email" /><br />
     <input type="password" v-model="password" placeholder="Password" /><br />
-    <el-button type="primary" @click="signUp" round>Sign Up</el-button>
+    <el-button type="primary" round @click="signUp">Sign Up</el-button>
     <p>Or go back to <router-link to="/login">login</router-link></p>
   </div>
 </template>
@@ -22,17 +22,17 @@ export default {
   },
   methods: {
     signUp: function() {
-      // firebase
-      //   .auth()
-      //   .createUserWithEmailAndPassword(this.email, this.password)
-      //   .then(
-      //     user => {
-      //       this.$router.replace("home");
-      //     },
-      //     err => {
-      //       alert("Ops." + err.message);
-      //     }
-      //   );
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then(
+          user => {
+            this.$router.replace("dashboard");
+          },
+          err => {
+            alert("Ops." + err.message);
+          }
+        );
     }
   }
 };
