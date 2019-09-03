@@ -14,7 +14,8 @@ import Icons from "@/pages/Icons.vue";
 import Maps from "@/pages/Maps.vue";
 import Login from "@/pages/Login.vue";
 import Profile from "@/pages/Profile.vue";
-import Youngsters from "@/pages/Youngsters.vue";
+import indexFellow from "@/pages/Fellow/index.vue";
+import createFellow from "@/pages/Fellow/create.vue";
 import SignUp from "@/pages/SignUp.vue";
 import Typography from "@/pages/Typography.vue";
 import TableList from "@/pages/TableList.vue";
@@ -47,9 +48,16 @@ const router = new VueRouter({
 	        component: Profile
 	      },
 	      {
-	        path: "youngsters",
-	        name: "youngsters",
-	        component: Youngsters
+	        path: "fellow",
+	        name: "fellow",
+	        component: indexFellow,
+	        children: [
+		        {
+		        	path: "/fellow-create",
+			        name: "new fellow",
+			        component: createFellow
+		        }
+	        ]
 	      },
 	      {
 	        path: "notifications",

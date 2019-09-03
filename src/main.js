@@ -20,7 +20,7 @@ import router from "./router/index";
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import locale from "element-ui/lib/locale/lang/en";
-// import store from "./store";
+import store from "./store";
 
 Vue.use(ElementUI, { locale });
 
@@ -45,6 +45,7 @@ firebase.auth().onAuthStateChanged(() => {
   if (!app) {
     app = new Vue({
       router,
+      store,
       render: h => h(App)
     }).$mount("#app");
   }
