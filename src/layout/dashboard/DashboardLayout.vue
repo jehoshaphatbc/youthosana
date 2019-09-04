@@ -9,7 +9,7 @@
         <sidebar-link to="/icons" name="Icons" icon="ti-pencil-alt2"/>
         <!-- <sidebar-link to="/maps" name="Map" icon="ti-map"/> -->
         <sidebar-link to="/notifications" name="Notifications" icon="ti-bell"/>
-        <sidebar-link to="/fellow" name="Fellow" icon="ti-user"/>
+        <sidebar-link to="/fellow/fellow-list" name="Fellow" icon="ti-user"/>
       </template>
       <mobile-menu>
         <li class="nav-item">

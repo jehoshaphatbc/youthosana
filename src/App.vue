@@ -38,3 +38,9 @@ export default {};
   }
 }
 </style>
+
+<style type="text/css">
+  .card-header h3 {
+    margin: 0px !important; 
+  }
+</style>
