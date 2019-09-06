@@ -17,6 +17,7 @@ import Profile from "@/pages/Profile.vue";
 import indexFellow from "@/pages/Fellow/index.vue";
 import createFellow from "@/pages/Fellow/create.vue";
 import listFellow from "@/pages/Fellow/list.vue";
+import editFellow from "@/pages/Fellow/edit.vue";
 import SignUp from "@/pages/SignUp.vue";
 import Typography from "@/pages/Typography.vue";
 import TableList from "@/pages/TableList.vue";
@@ -61,6 +62,11 @@ const router = new VueRouter({
 		        	path: "fellow-list",
 			        name: "list fellow",
 			        component: listFellow
+		        },
+		        {
+		        	path: ":id/fellow-edit",
+			        name: "Edit fellow",
+			        component: editFellow
 		        }
 	        ]
 	      },

@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-12">
-      <div class="card">
+      <div class="card" style="padding-bottom: 20px;">
         <div class="card-header">
           <el-row :gutter="20">
             <el-col :span="20" style="text-align: left;">
@@ -26,28 +26,42 @@
             </el-table-column>
             <el-table-column
               label="Birthday"
-              width="180">
+              width="120">
               <template slot-scope="scope">
                 <span>{{ scope.row.birthday }}</span>
               </template>
             </el-table-column>
             <el-table-column
               label="Age"
-              width="180">
+              width="80">
               <template slot-scope="scope">
                 <span>{{ scope.row.age }}</span>
               </template>
             </el-table-column>
             <el-table-column
+              label="Gender"
+              width="100">
+              <template slot-scope="scope">
+                <span>{{ scope.row.gender }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
               label="Email"
-              width="180">
+              width="200">
               <template slot-scope="scope">
                 <span>{{ scope.row.email }}</span>
               </template>
             </el-table-column>
             <el-table-column
-              label="Phone"
+              label="Address"
               width="180">
+              <template slot-scope="scope">
+                <span>{{ scope.row.address }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="Phone"
+              width="150">
               <template slot-scope="scope">
                 <span>{{ scope.row.phone }}</span>
               </template>
@@ -58,14 +72,14 @@
                 <el-button
                   size="mini"
                   type="primary"
-                  @click="handleEdit(scope.$index, scope.row)" icon="el-icon-view"></el-button>
+                  @click="handleView(scope.row)" icon="el-icon-view"></el-button>
                 <el-button
                   size="mini"
-                  @click="handleEdit(scope.$index, scope.row)" icon="el-icon-edit"></el-button>
+                  @click="handleEdit(scope.row)" icon="el-icon-edit"></el-button>
                 <el-button
                   size="mini"
                   type="danger"
-                  @click="handleDelete(scope.$index, scope.row)" icon="el-icon-delete"></el-button>
+                  @click="handleDelete(scope.row)" icon="el-icon-delete"></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -80,7 +94,7 @@
   export default {
     data() {
       return {
-        fellows: [],
+        fellows: [{}],
         loading: false
       }
     },
@@ -88,12 +102,32 @@
       this.loadData()
     },
     computed: mapGetters({
-      getFellows: 'getFellows'
+      getFellows: 'getFellows',
+      failed: 'getFailed',
+      success: 'getSuccess'
     }),
     watch: {
       getFellows: function(val) {
+        // console.log(val)
         this.fellows = val
         this.loading = false
+      },
+      failed() {
+        this.loading = false
+        const error = this.$store.getters('getFailed')
+        this.$message({
+          title: 'Error',
+          message: error,
+          type: 'error'
+        })
+      },
+      success: function(val) {
+        this.loading = false
+        this.$message({
+          title: 'Success',
+          message: 'Data Berhasil Dihapus!',
+          type: 'success'
+        })
       }
     },
     methods: {
@@ -101,11 +135,15 @@
         this.loading = true
         this.$store.dispatch('loadFellows')
       },
-      handleEdit(index, row) {
-        console.log(index, row);
+      handleView(index) {
+        console.log(index);
       },
-      handleDelete(index, row) {
-        console.log(index, row);
+      handleEdit(index) {
+        console.log(index.id);
+        this.$router.push(index.id+'/fellow-edit')
+      },
+      handleDelete(index) {
+        this.$store.dispatch('deleteFellow', index);
       }
     }
   }

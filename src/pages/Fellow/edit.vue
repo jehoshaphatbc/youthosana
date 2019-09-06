@@ -5,10 +5,10 @@
 				<div class="card-header">
 					<el-row :gutter="20">
 				      <el-col :span="20" style="text-align: left;">
-				      	<h3>Create Fellow</h3>
+				      	<h3>Edit Fellow</h3>
 				      </el-col>
 				      <el-col :span="4" style="text-align: right;">
-				        <router-link  to="fellow-list"><el-button type="info" icon="el-icon-back" style="width: 100%">Back</el-button></router-link>
+				        <router-link  to="/fellow/fellow-list"><el-button type="info" icon="el-icon-back" style="width: 100%">Back</el-button></router-link>
 				      </el-col>
 				    </el-row>
 				</div>
