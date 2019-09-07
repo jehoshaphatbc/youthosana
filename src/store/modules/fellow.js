@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import _ from 'lodash'
 
 const state = {
 	fellow: {},
@@ -11,6 +12,9 @@ const state = {
 const getters = {
   getFellow(state) {
     return state.fellow
+  },
+  getFellowById: (state, getters) => (id) => {
+    return _.find(state.fellows, ['id', id])
   },
   getFellows(state) {
     return state.fellows
@@ -33,6 +37,10 @@ const actions = {
       commit('setFellows', fellow)
   	})
   },
+  getFellowId({ commit, getters }, id) {
+    const fellow = getters.getFellowById(id)
+    commit('setFellow', fellow)
+  },
   saveFellow({ commit, rootGetters }, data) {
     var key = firebase.database().ref().child('fellow').push().key;
     firebase.database().ref('/fellow/'+key).set({
@@ -45,12 +53,27 @@ const actions = {
       gender: data.gender
       },(e)=>{
         if(e){
-            console.log('error')
-            commit('setFailed')
+          commit('setFailed')
         }else{
-            console.log('success')
-            commit('setSuccess')
+          commit('setSuccess')
         }
+    })
+  },
+  updateFellow({ commit }, data) {
+    const postData = {
+      name: data.name,
+      address: data.address,
+      email: data.email,
+      birthday: data.birthday,
+      phone: data.phone,
+      gender: data.gender
+    }
+    firebase.database().ref("/fellow/"+data.id).set(postData,(err)=>{
+      if(err){
+        commit('setFailed')
+      }else{
+        commit('setSuccess')
+      }
     })
   },
   deleteFellow({ commit, dispatch }, data) {
@@ -65,6 +88,9 @@ const actions = {
 const mutations = {
 	setFellows(state, fellows) {
     state.fellows = fellows
+  },
+  setFellow(state, data) {
+    state.fellow = data
   },
   setSuccess(state) {
     state.success += 1

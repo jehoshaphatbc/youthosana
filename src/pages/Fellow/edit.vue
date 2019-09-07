@@ -39,7 +39,7 @@
 					    <el-input type="textarea" v-model="form.address"></el-input>
 					  </el-form-item>
 					  <el-form-item>
-					    <el-button type="primary" @click="submitForm('form')" :loading="loading">Create</el-button>
+					    <el-button type="primary" @click="submitForm('form')" :loading="loading">Update</el-button>
 					    <el-button @click="resetForm('form')">Reset</el-button>
 					  </el-form-item>
 					</el-form>
@@ -54,6 +54,7 @@ import { mapGetters } from 'vuex'
     data() {
       return {
         form: {
+          id: '',
           name: '',
           email: '',
           birthday: '',
@@ -81,11 +82,24 @@ import { mapGetters } from 'vuex'
         }
       };
     },
+    created() {
+      this.getData(this.$route.params.id)
+    },
     computed: mapGetters({
       failed: 'getFailed',
+      data: 'getFellow',
       success: 'getSuccess'
     }),
     watch: {
+      data: function(val) {
+        this.form.id = val.id
+        this.form.name = val.name
+        this.form.email = val.email
+        this.form.birthday = val.birthday
+        this.form.address = val.address
+        this.form.phone = val.phone
+        this.form.gender = val.gender
+      },
       failed() {
         this.loading = false
         const error = this.$store.getters('getFailed')
@@ -106,11 +120,14 @@ import { mapGetters } from 'vuex'
       }
     },
     methods: {
+      getData(id) {
+        this.$store.dispatch('getFellowId', id)
+      },
       submitForm(form) {
         this.$refs[form].validate((valid) => {
           if (valid) {
             this.loading = true
-            this.$store.dispatch('saveFellow', this.form)
+            this.$store.dispatch('updateFellow', this.form)
           } else {
             console.log('error submit!!');
             return false;

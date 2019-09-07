@@ -139,7 +139,7 @@
         console.log(index);
       },
       handleEdit(index) {
-        console.log(index.id);
+        // console.log(index.id);
         this.$router.push(index.id+'/fellow-edit')
       },
       handleDelete(index) {
