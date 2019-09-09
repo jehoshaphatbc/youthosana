@@ -32,7 +32,22 @@ const actions = {
     firebase.database().ref("fellow").on("value", (snapshot) => {
       const fellow = []
       for(var a in snapshot.val()){
-        fellow.push(snapshot.val()[a])
+        var today = new Date()
+        var birthDate = new Date(snapshot.val()[a].birthday)
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age = age - 1;
+        }
+        fellow.push({
+          name: snapshot.val()[a].name,
+          email: snapshot.val()[a].email,
+          birthday: snapshot.val()[a].birthday,
+          gender: snapshot.val()[a].gender,
+          address: snapshot.val()[a].address,
+          phone: snapshot.val()[a].phone,
+          age: age
+        })
       }
       commit('setFellows', fellow)
   	})
