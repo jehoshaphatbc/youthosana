@@ -19,13 +19,16 @@
             element-loading-text="Loading"
             style="width: 100%; margin-top: 10px;">
             <el-table-column
-              label="Name">
+              label="Name"
+              align="center"
+              width="200">
               <template slot-scope="scope">
                 <span>{{ scope.row.name }}</span>
               </template>
             </el-table-column>
             <el-table-column
               label="Birthday"
+              align="center"
               width="120">
               <template slot-scope="scope">
                 <span>{{ scope.row.birthday }}</span>
@@ -33,6 +36,7 @@
             </el-table-column>
             <el-table-column
               label="Age"
+              align="center"
               width="80">
               <template slot-scope="scope">
                 <span>{{ scope.row.age }}</span>
@@ -40,34 +44,31 @@
             </el-table-column>
             <el-table-column
               label="Gender"
+              align="center"
               width="100">
               <template slot-scope="scope">
-                <span>{{ scope.row.gender }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="Email"
-              width="200">
-              <template slot-scope="scope">
-                <span>{{ scope.row.email }}</span>
+                <span v-if="scope.row.gender == 'Male'"><i class="el-icon-male"></i></span>
+                <span v-else><i class="el-icon-female"></i></span>
               </template>
             </el-table-column>
             <el-table-column
               label="Address"
-              width="180">
+              align="center">
               <template slot-scope="scope">
                 <span>{{ scope.row.address }}</span>
               </template>
             </el-table-column>
             <el-table-column
               label="Phone"
-              width="150">
+              width="150"
+              align="center">
               <template slot-scope="scope">
                 <span>{{ scope.row.phone }}</span>
               </template>
             </el-table-column>
             <el-table-column
-              label="Operations">
+              label="Operations"
+              align="center">
               <template slot-scope="scope">
                 <el-button
                   size="mini"
@@ -76,10 +77,8 @@
                 <el-button
                   size="mini"
                   @click="handleEdit(scope.row)" icon="el-icon-edit"></el-button>
-                <el-button
-                  size="mini"
-                  type="danger"
-                  @click="handleDelete(scope.row)" icon="el-icon-delete"></el-button>
+                <el-button type="success" size="mini" v-if="scope.row.status == 1" @click="onActive(scope.row, 0)"><i class="el-icon-check" :loading="loadingActive"></i> Active</el-button>
+                <el-button type="info" size="mini" v-if="scope.row.status == 0" @click="onActive(scope.row, 1)" :loading="loadingActive"><i class="el-icon-close"></i> Non Active</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -95,7 +94,9 @@
     data() {
       return {
         fellows: [{}],
-        loading: false
+        fellow: {},
+        loading: false,
+        loadingActive: false
       }
     },
     created() {
@@ -108,7 +109,6 @@
     }),
     watch: {
       getFellows: function(val) {
-        // console.log(val)
         this.fellows = val
         this.loading = false
       },
@@ -122,10 +122,10 @@
         })
       },
       success: function(val) {
-        this.loading = false
+        this.loadingActive = false
         this.$message({
           title: 'Success',
-          message: 'Data Berhasil Dihapus!',
+          message: 'Data Berhasil Diubah!',
           type: 'success'
         })
       }
@@ -136,14 +136,17 @@
         this.$store.dispatch('loadFellows')
       },
       handleView(index) {
-        console.log(index);
+        this.$router.push(index.id+'/fellow-view')
+        // const data = this.$store.getters.getFellowById(index.id)
+        // this.fellow = data
       },
       handleEdit(index) {
-        // console.log(index.id);
         this.$router.push(index.id+'/fellow-edit')
       },
-      handleDelete(index) {
-        this.$store.dispatch('deleteFellow', index);
+      onActive(data, active) {
+        this.loadingActive = true
+        data.status = active
+        this.$store.dispatch('activeFellow', data)
       }
     }
   }

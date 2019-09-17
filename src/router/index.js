@@ -16,6 +16,7 @@ import Login from "@/pages/Login.vue";
 import Profile from "@/pages/Profile.vue";
 import indexFellow from "@/pages/Fellow/index.vue";
 import createFellow from "@/pages/Fellow/create.vue";
+import viewFellow from "@/pages/Fellow/view.vue";
 import listFellow from "@/pages/Fellow/list.vue";
 import editFellow from "@/pages/Fellow/edit.vue";
 import SignUp from "@/pages/SignUp.vue";
@@ -67,6 +68,11 @@ const router = new VueRouter({
 		        	path: ":id/fellow-edit",
 			        name: "Edit fellow",
 			        component: editFellow
+		        },
+		        {
+		        	path: ":id/fellow-view",
+			        name: "View fellow",
+			        component: viewFellow
 		        }
 	        ]
 	      },

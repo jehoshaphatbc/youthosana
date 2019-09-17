@@ -14,7 +14,14 @@
 				</div>
 				<div class="card-body">
 					<el-form :model="form" :rules="rules" ref="form" label-width="120px" class="demo-ruleForm">
-					  <el-form-item label="Name" prop="name">
+					  <el-form-item label="Photo Profile" prop="photoProfile">
+              <label class="upload-group">
+                Upload Image
+                <input type="file" id="file" class="upload-group" @change="onFileSelected">
+              </label>
+              <el-button type="primary" icon="el-icon-back" style="width: 10%; margin-left: 20px;" @click="onUpload">Upload</el-button>
+            </el-form-item>
+            <el-form-item label="Name" prop="name">
 					    <el-input v-model="form.name"></el-input>
 					  </el-form-item>
             <el-form-item label="Email" prop="email">
@@ -49,11 +56,14 @@
 	</div>
 </template>
 <script>
+import firebase from "firebase";
 import { mapGetters } from 'vuex'
   export default {
     data() {
       return {
+        selectedFile: null,
         form: {
+          photoProfile: '',
           name: '',
           email: '',
           birthday: '',
@@ -107,19 +117,74 @@ import { mapGetters } from 'vuex'
     },
     methods: {
       submitForm(form) {
-        this.$refs[form].validate((valid) => {
-          if (valid) {
-            this.loading = true
-            this.$store.dispatch('saveFellow', this.form)
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
+        console.log(this.form)
+        // this.$refs[form].validate((valid) => {
+        //   if (valid) {
+        //     this.loading = true
+        //     this.$store.dispatch('saveFellow', this.form)
+        //   } else {
+        //     console.log('error submit!!');
+        //     return false;
+        //   }
+        // });
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
+      },
+      onFileSelected(event) {
+        this.form.photoProfile = event.target.files[0]
+      },
+      onUpload() {
+        var fileName = this.selectedFile.name
+        var storageRef = firebase.storage().ref('/profile/' + fileName)
+        var uploadTask = storageRef.put(this.selectedFile)
+
+        uploadTask.on('state_changed', function(snapshot) {
+
+        }, function(error) {
+
+        }, function() {
+          uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+            console.log('File available at', downloadURL);
+          });
+        })
       }
     }
   }
 </script>
+
+<style>
+  label.upload-group {
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-appearance: none;
+    text-align: center;
+    box-sizing: border-box;
+    outline: 0;
+    margin: 0;
+    -webkit-transition: .1s;
+    transition: .1s;
+    font-weight: 500;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    color: #FFF !important;
+    background-color: #409EFF;
+    border-color: #409EFF;
+  }
+
+  label.upload-group:hover {
+    background: #66b1ff;
+    border-color: #66b1ff;
+    color: #FFF;
+  }
+
+  input#file {
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
+    z-index: -1;
+  }
+</style>

@@ -40,7 +40,7 @@
 					  </el-form-item>
 					  <el-form-item>
 					    <el-button type="primary" @click="submitForm('form')" :loading="loading">Update</el-button>
-					    <el-button @click="resetForm('form')">Reset</el-button>
+					    <!-- <el-button @click="resetForm('form')">Reset</el-button> -->
 					  </el-form-item>
 					</el-form>
 				</div>
@@ -60,6 +60,7 @@ import { mapGetters } from 'vuex'
           birthday: '',
           address: '',
           phone: '',
+          status: '',
           gender: ''
         },
         loading: false,
@@ -99,6 +100,7 @@ import { mapGetters } from 'vuex'
         this.form.address = val.address
         this.form.phone = val.phone
         this.form.gender = val.gender
+        this.form.status = val.status
       },
       failed() {
         this.loading = false
@@ -133,10 +135,10 @@ import { mapGetters } from 'vuex'
             return false;
           }
         });
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
       }
+      // resetForm(formName) {
+      //   this.$refs[formName].resetFields();
+      // }
     }
   }
 </script>

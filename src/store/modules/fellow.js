@@ -40,12 +40,14 @@ const actions = {
           age = age - 1;
         }
         fellow.push({
+          id: snapshot.val()[a].id,
           name: snapshot.val()[a].name,
           email: snapshot.val()[a].email,
           birthday: snapshot.val()[a].birthday,
           gender: snapshot.val()[a].gender,
           address: snapshot.val()[a].address,
           phone: snapshot.val()[a].phone,
+          status: snapshot.val()[a].status,
           age: age
         })
       }
@@ -65,6 +67,7 @@ const actions = {
       email: data.email,
       birthday: data.birthday,
       phone: data.phone,
+      status: '1',
       gender: data.gender
       },(e)=>{
         if(e){
@@ -74,14 +77,35 @@ const actions = {
         }
     })
   },
+  activeFellow({ commit }, data) {
+    const postData = {
+      name: data.name,
+      id: data.id,
+      address: data.address,
+      email: data.email,
+      birthday: data.birthday,
+      phone: data.phone,
+      gender: data.gender,
+      status: data.status
+    }
+    firebase.database().ref("/fellow/"+data.id).set(postData,(err)=>{
+      if(err){
+        commit('setFailed')
+      }else{
+        commit('setSuccess')
+      }
+    })
+  },
   updateFellow({ commit }, data) {
     const postData = {
+      id: data.id,
       name: data.name,
       address: data.address,
       email: data.email,
       birthday: data.birthday,
       phone: data.phone,
-      gender: data.gender
+      gender: data.gender,
+      status: data.status
     }
     firebase.database().ref("/fellow/"+data.id).set(postData,(err)=>{
       if(err){

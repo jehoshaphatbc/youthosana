@@ -36,7 +36,7 @@ firebase.initializeApp({
   authDomain: "youthosana-a4b7a.firebaseapp.com",
   databaseURL: "https://youthosana-a4b7a.firebaseio.com",
   projectId: "youthosana-a4b7a",
-  storageBucket: "",
+  storageBucket: "gs://youthosana-a4b7a.appspot.com/",
   messagingSenderId: "919677473708",
   appId: "1:919677473708:web:4ca338f84a5418e1"
 });
