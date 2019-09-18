@@ -45,6 +45,7 @@ const actions = {
           email: snapshot.val()[a].email,
           birthday: snapshot.val()[a].birthday,
           gender: snapshot.val()[a].gender,
+          url: snapshot.val()[a].url,
           address: snapshot.val()[a].address,
           phone: snapshot.val()[a].phone,
           status: snapshot.val()[a].status,
@@ -59,23 +60,57 @@ const actions = {
     commit('setFellow', fellow)
   },
   saveFellow({ commit, rootGetters }, data) {
-    var key = firebase.database().ref().child('fellow').push().key;
-    firebase.database().ref('/fellow/'+key).set({
-      id: key,
-      name: data.name,
-      address: data.address,
-      email: data.email,
-      birthday: data.birthday,
-      phone: data.phone,
-      status: '1',
-      gender: data.gender
-      },(e)=>{
-        if(e){
-          commit('setFailed')
-        }else{
-          commit('setSuccess')
-        }
-    })
+    if (data.photoProfile == '') {
+      var key = firebase.database().ref().child('fellow').push().key;
+      firebase.database().ref('/fellow/'+key).set({
+        id: key,
+        name: data.name,
+        address: data.address,
+        email: data.email,
+        url: '',
+        birthday: data.birthday,
+        phone: data.phone,
+        status: '1',
+        gender: data.gender
+        },(e)=>{
+          if(e){
+            commit('setFailed')
+          }else{
+            commit('setSuccess')
+          }
+      })
+    } else {
+      var fileName = data.url.name
+      var storageRef = firebase.storage().ref('/profile/' + fileName)
+      var uploadTask = storageRef.put(data.url)
+
+      uploadTask.on('state_changed', function(snapshot) {
+
+      }, function(error) {
+
+      }, function() {
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          var key = firebase.database().ref().child('fellow').push().key;
+          firebase.database().ref('/fellow/'+key).set({
+            id: key,
+            name: data.name,
+            address: data.address,
+            email: data.email,
+            url: downloadURL,
+            birthday: data.birthday,
+            phone: data.phone,
+            status: '1',
+            gender: data.gender
+            },(e)=>{
+              if(e){
+                commit('setFailed')
+              }else{
+                commit('setSuccess')
+              }
+          })
+        });
+      })
+    }
   },
   activeFellow({ commit }, data) {
     const postData = {
@@ -84,6 +119,7 @@ const actions = {
       address: data.address,
       email: data.email,
       birthday: data.birthday,
+      url: data.url,
       phone: data.phone,
       gender: data.gender,
       status: data.status
@@ -97,22 +133,35 @@ const actions = {
     })
   },
   updateFellow({ commit }, data) {
-    const postData = {
-      id: data.id,
-      name: data.name,
-      address: data.address,
-      email: data.email,
-      birthday: data.birthday,
-      phone: data.phone,
-      gender: data.gender,
-      status: data.status
-    }
-    firebase.database().ref("/fellow/"+data.id).set(postData,(err)=>{
-      if(err){
-        commit('setFailed')
-      }else{
-        commit('setSuccess')
-      }
+    var fileName = data.url.name
+    var storageRef = firebase.storage().ref('/profile/' + fileName)
+    var uploadTask = storageRef.put(data.url)
+
+    uploadTask.on('state_changed', function(snapshot) {
+
+    }, function(error) {
+
+    }, function() {
+      uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+        const postData = {
+          id: data.id,
+          name: data.name,
+          address: data.address,
+          email: data.email,
+          birthday: data.birthday,
+          phone: data.phone,
+          url: downloadURL,
+          gender: data.gender,
+          status: data.status
+        }
+        firebase.database().ref("/fellow/"+data.id).set(postData,(err)=>{
+          if(err){
+            commit('setFailed')
+          }else{
+            commit('setSuccess')
+          }
+        })  
+      });
     })
   },
   deleteFellow({ commit, dispatch }, data) {

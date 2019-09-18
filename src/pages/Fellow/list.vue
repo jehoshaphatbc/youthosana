@@ -3,18 +3,38 @@
     <div class="col-12">
       <div class="card" style="padding-bottom: 20px;">
         <div class="card-header">
-          <el-row :gutter="20">
-            <el-col :span="20" style="text-align: left;">
+          <el-row>
+            <el-col :span="4" style="text-align: left;">
               <h3>List Fellow</h3>
             </el-col>
-            <el-col :span="4" style="text-align: right;">
-              <router-link  to="fellow-create"><el-button type="primary" icon="el-icon-plus" style="width: 100%">Create</el-button></router-link>
+            <el-col :span="20">
+              <div class="menu-right">
+                <el-date-picker
+                  class="search-date"
+                  size="small"
+                  v-model="searchDate"
+                  type="daterange"
+                  value-format="yyyy-MM-dd"
+                  range-separator="To"
+                  start-placeholder="Start date"
+                  end-placeholder="End date"
+                  @change="changeDate">
+                </el-date-picker>
+                <el-input
+                  placeholder="Name"
+                  suffix-icon="el-icon-search"
+                  v-model="search"
+                  size="small"
+                  clearable>
+                </el-input>
+                <router-link to="fellow-create"><el-button class="btn-create" type="primary" size="small" icon="el-icon-plus">Create</el-button></router-link>
+              </div>
             </el-col>
           </el-row>
         </div>
         <div class="card-body">
           <el-table
-            :data="fellows"
+            :data="filterFellows"
             v-loading.body="loading"
             element-loading-text="Loading"
             style="width: 100%; margin-top: 10px;">
@@ -89,11 +109,14 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   import { mapGetters } from 'vuex'
   export default {
     data() {
       return {
-        fellows: [{}],
+        search: '',
+        searchDate: '',
+        fellows: [],
         fellow: {},
         loading: false,
         loadingActive: false
@@ -102,11 +125,18 @@
     created() {
       this.loadData()
     },
-    computed: mapGetters({
-      getFellows: 'getFellows',
-      failed: 'getFailed',
-      success: 'getSuccess'
-    }),
+    computed: {
+      ...mapGetters({
+        getFellows: 'getFellows',
+        failed: 'getFailed',
+        success: 'getSuccess'
+      }),
+      filterFellows() {
+        return this.fellows.filter(fellow => {
+          return fellow.name.toLowerCase().includes(this.search.toLowerCase())
+        })
+      }
+    },
     watch: {
       getFellows: function(val) {
         this.fellows = val
@@ -131,6 +161,18 @@
       }
     },
     methods: {
+      changeDate() {
+        var startDate = this.searchDate[0]
+        var endDate = this.searchDate[1]
+        return _.filter(this.filterFellows, function(data) {
+          if ((_.isNull(startDate) && _.isNull(endDate))) {
+            console.log(true)
+          } else {
+            var date = data.birthday
+            console.log(date >= startDate && date <= endDate)
+          }
+        })
+      },
       loadData() {
         this.loading = true
         this.$store.dispatch('loadFellows')

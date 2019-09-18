@@ -3,11 +3,11 @@
 		<div class="col-12">
 			<card class="card-user">
         <div slot="image">
-          <img src="@/assets/img/background.jpg" alt="...">
+          <img src="@/assets/img/youthosana.jpg" alt="...">
         </div>
         <div>
           <div class="author">
-            <img class="avatar border-white" src="@/assets/img/faces/face-2.jpg" alt="...">
+            <img class="avatar border-white" :src="profile.url" alt="...">
             <h4 class="title">{{ profile.name }}
               <br>
               <a href="#">
@@ -16,7 +16,7 @@
             </h4>
           </div>
         </div>
-          <router-link  to="/fellow/fellow-list"><el-button type="info" icon="el-icon-back" style="width: 10%">Back</el-button></router-link>
+          <router-link  to="/fellow/fellow-list"><el-button size="small" type="danger" icon="el-icon-back">Back</el-button></router-link>
       </card>
 		</div>
 	</div>
@@ -28,6 +28,7 @@ import { mapGetters } from 'vuex'
       return {
         profile: {
           id: '',
+          url: '',
           name: '',
           email: '',
           birthday: '',
@@ -54,6 +55,7 @@ import { mapGetters } from 'vuex'
         this.profile.phone = val.phone
         this.profile.gender = val.gender
         this.profile.status = val.status
+        this.profile.url = val.url
       }
     },
     methods: {

@@ -8,18 +8,27 @@
 				      	<h3>Create Fellow</h3>
 				      </el-col>
 				      <el-col :span="4" style="text-align: right;">
-				        <router-link  to="fellow-list"><el-button type="info" icon="el-icon-back" style="width: 100%">Back</el-button></router-link>
+				        <router-link  to="fellow-list"><el-button type="danger" size="small" icon="el-icon-back">Back</el-button></router-link>
 				      </el-col>
 				    </el-row>
 				</div>
 				<div class="card-body">
 					<el-form :model="form" :rules="rules" ref="form" label-width="120px" class="demo-ruleForm">
-					  <el-form-item label="Photo Profile" prop="photoProfile">
-              <label class="upload-group">
-                Upload Image
-                <input type="file" id="file" class="upload-group" @change="onFileSelected">
-              </label>
-              <el-button type="primary" icon="el-icon-back" style="width: 10%; margin-left: 20px;" @click="onUpload">Upload</el-button>
+					  <el-form-item label="Photo Profile" prop="url">
+              <div class="demo-image">
+                <label class="upload-group">
+                  <div class="avatar-uploader" key="cover">
+                    <el-image
+                      v-if="photoProfile"
+                      style="width: 200px; height: 200px; border-radius: 5px;"
+                      :src="photoProfile"
+                      class="avatar"
+                      fit="cover"></el-image>
+                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  </div>
+                  <input type="file" id="file" class="upload-group" @change="onFileSelected">
+                </label>
+              </div>
             </el-form-item>
             <el-form-item label="Name" prop="name">
 					    <el-input v-model="form.name"></el-input>
@@ -46,8 +55,8 @@
 					    <el-input type="textarea" v-model="form.address"></el-input>
 					  </el-form-item>
 					  <el-form-item>
-					    <el-button type="primary" @click="submitForm('form')" :loading="loading">Create</el-button>
-					    <el-button @click="resetForm('form')">Reset</el-button>
+					    <el-button type="primary" @click="submitForm('form')" :loading="loading" size="small">Create</el-button>
+					    <el-button @click="resetForm('form')" size="small">Reset</el-button>
 					  </el-form-item>
 					</el-form>
 				</div>
@@ -61,9 +70,10 @@ import { mapGetters } from 'vuex'
   export default {
     data() {
       return {
+        photoProfile: '',
         selectedFile: null,
         form: {
-          photoProfile: '',
+          url: '',
           name: '',
           email: '',
           birthday: '',
@@ -117,74 +127,57 @@ import { mapGetters } from 'vuex'
     },
     methods: {
       submitForm(form) {
-        console.log(this.form)
-        // this.$refs[form].validate((valid) => {
-        //   if (valid) {
-        //     this.loading = true
-        //     this.$store.dispatch('saveFellow', this.form)
-        //   } else {
-        //     console.log('error submit!!');
-        //     return false;
-        //   }
-        // });
+        this.$refs[form].validate((valid) => {
+          if (valid) {
+            this.loading = true
+            this.$store.dispatch('saveFellow', this.form)
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
       onFileSelected(event) {
-        this.form.photoProfile = event.target.files[0]
-      },
-      onUpload() {
-        var fileName = this.selectedFile.name
-        var storageRef = firebase.storage().ref('/profile/' + fileName)
-        var uploadTask = storageRef.put(this.selectedFile)
-
-        uploadTask.on('state_changed', function(snapshot) {
-
-        }, function(error) {
-
-        }, function() {
-          uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-            console.log('File available at', downloadURL);
-          });
-        })
+        this.form.url = event.target.files[0]
+        this.photoProfile = URL.createObjectURL(this.form.url);
       }
     }
   }
 </script>
 
 <style>
-  label.upload-group {
-    display: inline-block;
-    line-height: 1;
-    white-space: nowrap;
-    cursor: pointer;
-    -webkit-appearance: none;
-    text-align: center;
-    box-sizing: border-box;
-    outline: 0;
-    margin: 0;
-    -webkit-transition: .1s;
-    transition: .1s;
-    font-weight: 500;
-    padding: 12px 20px;
-    font-size: 14px;
-    border-radius: 4px;
-    color: #FFF !important;
-    background-color: #409EFF;
-    border-color: #409EFF;
-  }
-
-  label.upload-group:hover {
-    background: #66b1ff;
-    border-color: #66b1ff;
-    color: #FFF;
-  }
-
   input#file {
     width: 0.1px;
     height: 0.1px;
     position: absolute;
     z-index: -1;
+  }
+  .avatar-uploader {
+    border: 1px dashed #d9d9d9 !important;
+    border-radius: 6px;
+    width: 200px;
+    height: 200px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 200px;
+    height: 200px;
+    line-height: 200px !important;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
   }
 </style>

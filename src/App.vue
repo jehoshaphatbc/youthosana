@@ -43,4 +43,22 @@ export default {};
   .card-header h3 {
     margin: 0px !important; 
   }
+  .menu-right {
+    float: right;
+    display: flex;
+  }
+  .menu-left {
+    display: flex;
+    float: left;
+  }
+  .btn-create {
+    margin-left: 10px !important;
+  }
+  .search-date {
+    width: 100% !important;
+    margin-right: 10px;
+  }
+  .search-date .el-range-separator {
+    width: 10% !important;
+  }
 </style>
