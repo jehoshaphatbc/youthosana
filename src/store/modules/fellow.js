@@ -60,7 +60,7 @@ const actions = {
     commit('setFellow', fellow)
   },
   saveFellow({ commit, rootGetters }, data) {
-    if (data.photoProfile == '') {
+    if (!data.photoProfile) {
       var key = firebase.database().ref().child('fellow').push().key;
       firebase.database().ref('/fellow/'+key).set({
         id: key,
@@ -133,36 +133,56 @@ const actions = {
     })
   },
   updateFellow({ commit }, data) {
-    var fileName = data.url.name
-    var storageRef = firebase.storage().ref('/profile/' + fileName)
-    var uploadTask = storageRef.put(data.url)
-
-    uploadTask.on('state_changed', function(snapshot) {
-
-    }, function(error) {
-
-    }, function() {
-      uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-        const postData = {
-          id: data.id,
-          name: data.name,
-          address: data.address,
-          email: data.email,
-          birthday: data.birthday,
-          phone: data.phone,
-          url: downloadURL,
-          gender: data.gender,
-          status: data.status
-        }
-        firebase.database().ref("/fellow/"+data.id).set(postData,(err)=>{
-          if(err){
+    if (!data.photoProfile) {
+      firebase.database().ref("/fellow/"+data.id).set({
+        id: data.id,
+        name: data.name,
+        address: data.address,
+        email: data.email,
+        birthday: data.birthday,
+        phone: data.phone,
+        url: '',
+        gender: data.gender,
+        status: data.status
+        },(e)=>{
+          if(e){
             commit('setFailed')
           }else{
             commit('setSuccess')
           }
-        })  
-      });
-    })
+      })
+    } else {
+      var fileName = data.url.name
+      var storageRef = firebase.storage().ref('/profile/' + fileName)
+      var uploadTask = storageRef.put(data.url)
+
+      uploadTask.on('state_changed', function(snapshot) {
+
+      }, function(error) {
+
+      }, function() {
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          const postData = {
+            id: data.id,
+            name: data.name,
+            address: data.address,
+            email: data.email,
+            birthday: data.birthday,
+            phone: data.phone,
+            url: downloadURL,
+            gender: data.gender,
+            status: data.status
+          }
+          firebase.database().ref("/fellow/"+data.id).set(postData,(err)=>{
+            if(err){
+              commit('setFailed')
+            }else{
+              commit('setSuccess')
+            }
+          })  
+        });
+      })
+    }
   },
   deleteFellow({ commit, dispatch }, data) {
     firebase.database().ref("fellow/"+data.id).remove().then(()=>{

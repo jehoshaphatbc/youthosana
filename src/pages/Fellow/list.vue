@@ -10,19 +10,19 @@
             <el-col :span="20">
               <div class="menu-right">
                 <el-date-picker
-                  class="search-date"
+                  v-model="searchMonth"
+                  style="margin-right: 10px; width: 200px;"
+                  type="month"
+                  format="MMMM"
+                  value-format="MM"
                   size="small"
-                  v-model="searchDate"
-                  type="daterange"
-                  value-format="yyyy-MM-dd"
-                  range-separator="To"
-                  start-placeholder="Start date"
-                  end-placeholder="End date"
-                  @change="changeDate">
+                  @change="changeDate"
+                  placeholder="Pick a month">
                 </el-date-picker>
                 <el-input
                   placeholder="Name"
                   suffix-icon="el-icon-search"
+                  style="margin-right: 10px; width: 200px;"
                   v-model="search"
                   size="small"
                   clearable>
@@ -41,26 +41,23 @@
             <el-table-column
               label="Name"
               align="center"
+              prop="name"
+              sortable
               width="200">
-              <template slot-scope="scope">
-                <span>{{ scope.row.name }}</span>
-              </template>
             </el-table-column>
             <el-table-column
               label="Birthday"
+              sortable
+              prop="birthday"
               align="center"
               width="120">
-              <template slot-scope="scope">
-                <span>{{ scope.row.birthday }}</span>
-              </template>
             </el-table-column>
             <el-table-column
               label="Age"
+              sortable
               align="center"
+              prop="age"
               width="80">
-              <template slot-scope="scope">
-                <span>{{ scope.row.age }}</span>
-              </template>
             </el-table-column>
             <el-table-column
               label="Gender"
@@ -102,6 +99,16 @@
               </template>
             </el-table-column>
           </el-table>
+          <div style="padding: 10px;">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page.sync="currentPage"
+              :page-size="pageSize"
+              layout="total, prev, pager, next"
+              :total="total">
+            </el-pagination>
+          </div>
         </div>
       </div>
     </div>
@@ -114,8 +121,11 @@
   export default {
     data() {
       return {
+        pageSize: 0,
+        total: 0,
+        currentPage: 0,
         search: '',
-        searchDate: '',
+        searchMonth: '',
         fellows: [],
         fellow: {},
         loading: false,
@@ -132,9 +142,17 @@
         success: 'getSuccess'
       }),
       filterFellows() {
-        return this.fellows.filter(fellow => {
-          return fellow.name.toLowerCase().includes(this.search.toLowerCase())
-        })
+        if (this.searchMonth) {
+          return this.fellows.filter(fellow => {
+            return fellow.birthday.slice(5, 7).includes(this.searchMonth)
+          })
+        } else if(this.search) {
+          return this.fellows.filter(fellow => {
+            return fellow.name.toLowerCase().includes(this.search.toLowerCase())
+          })
+        } else {
+          return this.fellows
+        }
       }
     },
     watch: {
@@ -161,16 +179,13 @@
       }
     },
     methods: {
+      handleCurrentChange() {
+      },
+      handleSizeChange() {
+      },
       changeDate() {
-        var startDate = this.searchDate[0]
-        var endDate = this.searchDate[1]
-        return _.filter(this.filterFellows, function(data) {
-          if ((_.isNull(startDate) && _.isNull(endDate))) {
-            console.log(true)
-          } else {
-            var date = data.birthday
-            console.log(date >= startDate && date <= endDate)
-          }
+        return this.fellows.filter(fellow => {
+          return fellow.birthday.slice(5, 7).includes(this.searchMonth)
         })
       },
       loadData() {
